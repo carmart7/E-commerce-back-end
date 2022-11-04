@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const { request } = require('express');
 const { Category, Product } = require('../../models');
 
 // The `/api/categories` endpoint
@@ -38,8 +39,14 @@ router.post('/', async (req, res) => {
   }
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', async (req, res) => {
   // update a category by its `id` value
+  try {
+    const categoryData = await Category.update(req.body, {where: {id: req.params.id}});
+    res.status(200).json(categoryData);
+  } catch (error) {
+    res.status(500).json(error);
+  }
 });
 
 router.delete('/:id', (req, res) => {
